@@ -9,6 +9,7 @@ class Movies extends Component {
   render() {
     return (
       <>
+        <p>Showing {this.state.movies.length} movies in the database</p>
         <table className="table">
           <thead>
             <tr>
@@ -25,6 +26,9 @@ class Movies extends Component {
                 <td>{movie.genre.name}</td>
                 <td>{movie.numberInStock}</td>
                 <td>{movie.dailyRentalRate}</td>
+                <td>
+                  <button className="btn btn-danger">Delete</button>
+                </td>
               </tr>
             ))}
           </tbody>
