@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { deleteMovie, getMovies } from '../services/fakeMovieService';
+import { paginate } from '../utils/paginate';
 import Like from './common/like';
+import Pagination from './common/pagination';
 
 class Movies extends Component {
   state = {
-    movies: getMovies()
+    movies: getMovies(),
+    pageSize: 4,
+    currentPage: 1
   };
 
   handleDelete = movie => {
@@ -22,14 +26,22 @@ class Movies extends Component {
     this.setState({ movies });
   };
 
+  handlePageChange = page => {
+    this.setState({ currentPage: page });
+  };
+
   render() {
-    const { length: numbeOfMovies } = this.state.movies;
-    if (numbeOfMovies === 0)
+    const { length: numberOfMovies } = this.state.movies;
+    const { pageSize, currentPage, movies: allMovies } = this.state;
+
+    if (numberOfMovies === 0)
       return <p>There are no more movies in the database</p>;
+
+    const movies = paginate(allMovies, currentPage, pageSize);
 
     return (
       <>
-        <p>Showing {numbeOfMovies} movies in the database</p>
+        <p>Showing {numberOfMovies} movies in the database</p>
         <table className="table">
           <thead>
             <tr>
@@ -42,7 +54,7 @@ class Movies extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.movies.map(movie => (
+            {movies.map(movie => (
               <tr key={movie._id}>
                 <th scope="row">{movie.title}</th>
                 <td>{movie.genre.name}</td>
@@ -66,6 +78,12 @@ class Movies extends Component {
             ))}
           </tbody>
         </table>
+        <Pagination
+          itemsCount={numberOfMovies}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onPageChange={this.handlePageChange}
+        />
       </>
     );
   }
